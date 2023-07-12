@@ -1,34 +1,48 @@
-import { createCamera } from "./components/camera.js";
-import { createCube } from "./components/cube.js";
-import { createScene } from "./components/scene.js";
+import { createCamera } from './components/camera.js';
+import { createCube } from './components/cube.js';
+import { createLights } from './components/lights.js';
+import { createScene } from './components/scene.js';
 
-import { createRenderer } from "./systems/renderer.js";
-import { Resizer } from "./systems/resizer.js";
-
-
+import { createRenderer } from './systems/renderer.js';
+import { Resizer } from './systems/resizer.js';
+import { Loop } from './systems/Loop.js';
 
 class World {
 
-    #camera;
-    #scene;
-    #renderer;
+  #camera;
+  #renderer;
+  #scene;
+  #loop;
 
-    constructor(container) {
-        this.#camera = createCamera();
-        this.#scene = createScene();
-        this.#renderer = createRenderer();
-        container.append(this.#renderer.domElement);
+  constructor(container) {
+    this.#camera = createCamera();
+    this.#renderer = createRenderer();
+    this.#scene = createScene();
+    this.#loop = new Loop(this.#camera, this.#scene, this.#renderer);
+    container.append(this.#renderer.domElement);
 
-        const cube = createCube();
+    const cube = createCube();
+    const light = createLights();
 
-        this.#scene.add(cube);
+    this.#loop.updatables.push(cube);
 
-        const resizer = new Resizer(container, this.#camera, this.#renderer);
-    }
+    this.#scene.add(cube, light);
 
-    render() {
-        this.#renderer.render(this.#scene, this.#camera);
-    }
+    const resizer = new Resizer(container, this.#camera, this.#renderer);
+  }
+
+  render() {
+    // draw a single frame
+    renderer.render(this.#scene, this.#camera);
+  }
+
+  start() {
+    this.#loop.start();
+  }
+
+  stop() {
+    this.#loop.stop();
+  }
 }
 
 export { World };

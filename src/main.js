@@ -1,8 +1,14 @@
-import { World } from "/src/world/world.js";
+import { World } from './world/world.js';
 
 function main() {
-    const container = document.getElementById('scene-container');
-    const world = new World(container);
-    world.render();
+  // Get a reference to the container element
+  const container = document.querySelector('#scene-container');
+
+  // create a new world
+  const world = new World(container);
+
+  // start the animation loop
+  world.start();
 }
+
 main();
